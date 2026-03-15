@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>If You Bought BTC Instead</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --main-card-bg: #101722;
+      --card-grad-a: #0f1722;
+      --card-grad-b: #0c1118;
+      --accent: #14d9c4;
+      --accent-hover: #1be7d0;
+      --accent-active: #0fb7a4;
+      --accent-glow: #1d8fbe;
+      --text-primary: #f5f7fa;
+      --text-heading: #f3f7fb;
+      --text-secondary: #a8b3c2;
+      --text-muted: #6e7b8f;
+      --border: #1e2a38;
+      --border-hover: #2a3b4f;
+      --border-focus: #14d9c4;
+      --input-bg: #0e1520;
+      --btn-text-on-accent: #071217;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 44px 18px 64px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1.1;
+      width: 100%;
+      text-align: center;
+      color: var(--text-heading);
+      letter-spacing: 0.01em;
+      text-shadow: 0 2px 14px rgba(20, 217, 196, 0.12);
+    }
+
+    .hint {
+      margin-top: 12px;
+      color: var(--text-muted);
+    }
+
+    .main-card {
+      margin-top: 22px;
+      background: linear-gradient(135deg, var(--card-grad-a) 0%, var(--card-grad-b) 100%);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 22px;
+      color: var(--text-primary);
+      position: relative;
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(29, 143, 190, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    form {
+      margin-top: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--input-bg);
+      overflow: hidden;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .input-row:hover {
+      border-color: var(--border-hover);
+    }
+
+    .input-row:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(20, 217, 196, 0.18);
+    }
+
+    .input-prefix {
+      padding: 12px 14px;
+      background: #121b28;
+      border-right: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .input-suffix {
+      padding: 12px 14px;
+      background: #121b28;
+      border-left: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 0;
+      border-radius: 0;
+      font-size: 16px;
+      outline: none;
+      background: var(--input-bg);
+      color: var(--text-primary);
+      caret-color: var(--accent);
+    }
+
+    input::placeholder {
+      color: var(--text-muted);
+    }
+
+    button {
+      width: fit-content;
+      border: 1px solid var(--border);
+      background: #182231;
+      color: var(--text-primary);
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.15s ease, box-shadow 0.18s ease;
+    }
+
+    button:disabled {
+      background: #1a2430;
+      color: #5c6878;
+      border-color: #253241;
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #calcBtn {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--btn-text-on-accent);
+      font-weight: 700;
+      box-shadow:
+        0 8px 20px rgba(20, 217, 196, 0.2),
+        0 0 0 1px rgba(20, 217, 196, 0.15);
+    }
+
+    #calcBtn:hover:not(:disabled) {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow:
+        0 12px 24px rgba(20, 217, 196, 0.24),
+        0 0 0 1px rgba(27, 231, 208, 0.16),
+        0 0 18px rgba(29, 143, 190, 0.22);
+    }
+
+    #calcBtn:active:not(:disabled) {
+      background: var(--accent-active);
+      border-color: var(--accent-active);
+      transform: translateY(1px);
+      box-shadow: 0 6px 14px rgba(20, 217, 196, 0.16);
+    }
+
+    .error {
+      margin-top: 12px;
+      color: #b91c1c;
+      min-height: 20px;
+    }
+
+    .result {
+      margin-top: 18px;
+      display: none;
+      gap: 16px;
+    }
+
+    .result-line {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text-primary);
+      transform: translateY(-8px);
+    }
+
+    .meme-card {
+      background: linear-gradient(135deg, #111a27 0%, #0d141e 100%);
+      color: var(--text-primary);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 28px;
+      box-shadow:
+        0 10px 26px rgba(0, 0, 0, 0.28),
+        0 0 0 1px rgba(29, 143, 190, 0.1);
+    }
+
+    .meme-title {
+      color: var(--text-secondary);
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin: 0;
+      text-align: center;
+    }
+
+  .meme-text {
+    margin: 14px 0 0;
+    text-align: center;
+    display: grid;
+    gap: 10px;
+  }
+
+  .meme-line-top {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text-secondary);
+  }
+
+  .meme-line-bottom {
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.06;
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+  }
+
+    .actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .share-btn {
+      display: inline-block;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      background: #182231;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 14px;
+      transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.15s ease;
+    }
+
+  .share-btn:hover {
+    border-color: var(--border-focus);
+    background: #1d2b3d;
+    transform: translateY(-1px);
+    box-shadow:
+      0 0 0 1px rgba(20, 217, 196, 0.2),
+      0 0 0 3px rgba(20, 217, 196, 0.18),
+      0 0 18px rgba(29, 143, 190, 0.22);
+  }
+
+    .small {
+      margin-top: 8px;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .meta-row {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .meta-row .small {
+      margin-top: 0;
+    }
+
+    .credit {
+      color: #3b4656;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .pre-calc-watermark {
+      position: absolute;
+      right: 22px;
+      bottom: 18px;
+      color: #3b4656;
+      font-size: 13px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    @media (max-width: 640px) {
+      .meme-line-top { font-size: 24px; }
+      .meme-line-bottom { font-size: 38px; }
+      .result-line { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>If You Bought BTC Instead</h1>
+    <div class="main-card">
+      <p class="hint">Enter what you bought in 2016 and the price e.g. $500 sneakers</p>
+
+      <form id="calcForm">
+        <div class="input-row">
+          <span class="input-prefix">I bought:</span>
+          <input id="userInput" type="text" value="$500 sneakers" placeholder="$500 sneakers" />
+          <span class="input-suffix">in 2016</span>
+        </div>
+        <button id="calcBtn" type="submit">Calculate</button>
+      </form>
+
+      <p id="error" class="error"></p>
+      <p id="preCalcWatermark" class="pre-calc-watermark">created by @PenguinWeb3</p>
+
+      <section id="result" class="result" aria-live="polite">
+        <p id="resultLine" class="result-line"></p>
+
+        <div class="meme-card" id="memeCard">
+          <p class="meme-title">If You Bought BTC Instead</p>
+          <p id="memeText" class="meme-text"></p>
+        </div>
+
+        <div class="actions">
+          <a id="tweetBtn" class="share-btn" target="_blank" rel="noreferrer">Share on Twitter</a>
+          <button id="copyImageBtn" type="button" class="share-btn">Copy Image</button>
+        </div>
+        <div class="meta-row">
+          <p id="metaInfo" class="small"></p>
+          <p class="credit">created by @PenguinWeb3</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById("calcForm");
+    const input = document.getElementById("userInput");
+    const calcBtn = document.getElementById("calcBtn");
+    const errorEl = document.getElementById("error");
+    const resultWrap = document.getElementById("result");
+    const resultLine = document.getElementById("resultLine");
+    const memeText = document.getElementById("memeText");
+    const metaInfo = document.getElementById("metaInfo");
+    const tweetBtn = document.getElementById("tweetBtn");
+    const copyImageBtn = document.getElementById("copyImageBtn");
+    const preCalcWatermark = document.getElementById("preCalcWatermark");
+
+    const FIXED_YEAR = 2016;
+
+    function parseInput(text) {
+      const amountMatch = text.match(/\$\s*([\d,]+(?:\.\d+)?)/);
+      if (!amountMatch) return null;
+
+      const amount = Number(amountMatch[1].replace(/,/g, ""));
+      const year = FIXED_YEAR;
+      const currentYear = new Date().getFullYear();
+
+      if (!Number.isFinite(amount) || amount <= 0) return null;
+      if (!Number.isInteger(year) || year < 2010 || year > currentYear) return null;
+
+      return { amount, year };
+    }
+
+    function usd(value) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0
+      }).format(value);
+    }
+
+    const BTC_NOW_APPROX_USD = 70500;
+    const BTC_YEAR_PRICE_USD = {
+      2010: 0.08,
+      2011: 4.3,
+      2012: 13.5,
+      2013: 770,
+      2014: 320,
+      2015: 430,
+      2016: 434,
+      2017: 998,
+      2018: 13860,
+      2019: 3700,
+      2020: 7200,
+      2021: 29300,
+      2022: 47700,
+      2023: 16600,
+      2024: 42200,
+      2025: 43000,
+      2026: 65000
+    };
+
+    function fetchBtcPrices(year) {
+      const priceThen = BTC_YEAR_PRICE_USD[year];
+      const priceNow = BTC_NOW_APPROX_USD;
+
+      if (!priceThen || !priceNow) {
+        throw new Error("No BTC historical price for this year. Try a year from 2010 to 2026.");
+      }
+
+      return Promise.resolve({ priceThen, priceNow });
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    async function buildResultImageBlob() {
+      if (!memeText.innerText.trim()) {
+        throw new Error("Calculate result first.");
+      }
+
+      const width = 1200;
+      const height = 630;
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Canvas is not supported.");
+
+      const bg = ctx.createLinearGradient(0, 0, width, height);
+      bg.addColorStop(0, "#0F1722");
+      bg.addColorStop(1, "#0C1118");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, width, height);
+
+      const panelX = 56;
+      const panelY = 56;
+      const panelW = width - 112;
+      const panelH = height - 112;
+
+      ctx.fillStyle = "#101722";
+      roundRect(ctx, panelX, panelY, panelW, panelH, 22);
+      ctx.fill();
+      ctx.strokeStyle = "#1E2A38";
+      ctx.lineWidth = 2;
+      roundRect(ctx, panelX, panelY, panelW, panelH, 22);
+      ctx.stroke();
+
+      // Turquoise outline/glow for the whole card (not only the inner result block)
+      ctx.shadowColor = "rgba(20, 217, 196, 0.30)";
+      ctx.shadowBlur = 22;
+      ctx.strokeStyle = "#14D9C4";
+      ctx.lineWidth = 3;
+      roundRect(ctx, panelX, panelY, panelW, panelH, 22);
+      ctx.stroke();
+      ctx.shadowColor = "transparent";
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = "#F5F7FA";
+      const topLine = resultLine.textContent || "";
+      let topSize = 62;
+      const topMaxWidth = panelW - 64;
+      while (topSize > 30) {
+        ctx.font = `700 ${topSize}px Arial`;
+        if (ctx.measureText(topLine).width <= topMaxWidth) break;
+        topSize -= 2;
+      }
+      ctx.fillText(topLine, panelX + 32, panelY + 64);
+
+      const cardX = panelX + 32;
+      const cardY = panelY + 96;
+      const cardW = panelW - 64;
+      const cardH = 232;
+
+      const cardGrad = ctx.createLinearGradient(0, cardY, 0, cardY + cardH);
+      cardGrad.addColorStop(0, "#111a27");
+      cardGrad.addColorStop(1, "#0d141e");
+      ctx.fillStyle = cardGrad;
+      roundRect(ctx, cardX, cardY, cardW, cardH, 16);
+      ctx.fill();
+
+      ctx.strokeStyle = "#1E2A38";
+      ctx.lineWidth = 2;
+      roundRect(ctx, cardX, cardY, cardW, cardH, 16);
+      ctx.stroke();
+
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#A8B3C2";
+      ctx.font = "600 30px Arial";
+      ctx.fillText("IF YOU BOUGHT BTC INSTEAD", cardX + cardW / 2, cardY + 50);
+
+      const mainLine = memeText.innerText.replace(/\s*\n\s*/g, " ");
+      let size = 68;
+      const maxWidth = cardW - 64;
+      while (size > 34) {
+        ctx.font = `800 ${size}px Arial`;
+        if (ctx.measureText(mainLine).width <= maxWidth) break;
+        size -= 2;
+      }
+      ctx.fillStyle = "#F5F7FA";
+      ctx.fillText(mainLine, cardX + cardW / 2, cardY + 150);
+      ctx.textAlign = "start";
+
+      // Bottom-right watermark on copied image card
+      ctx.fillStyle = "#3b4656";
+      ctx.font = "500 24px Arial";
+      const watermark = "created by @PenguinWeb3";
+      const wmWidth = ctx.measureText(watermark).width;
+      ctx.fillText(watermark, panelX + panelW - 32 - wmWidth, panelY + panelH - 28);
+
+      const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+      if (!blob) throw new Error("Could not create image.");
+      return blob;
+    }
+
+    async function copyResultImage() {
+      const blob = await buildResultImageBlob();
+      if (!navigator.clipboard || typeof ClipboardItem === "undefined") {
+        throw new Error("Clipboard image copy is not supported in this browser.");
+      }
+
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+    }
+
+    async function shareOnTwitterWithImage() {
+      const tweetText = resultLine.textContent || "If you bought BTC instead";
+      const blob = await buildResultImageBlob();
+
+      // Best effort: copy image to clipboard, then open Twitter compose with prefilled text.
+      if (navigator.clipboard && typeof ClipboardItem !== "undefined") {
+        try {
+          await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+        } catch {
+          // Continue even if clipboard write fails.
+        }
+      }
+
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`, "_blank", "noopener,noreferrer");
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorEl.textContent = "";
+      resultWrap.style.display = "none";
+      preCalcWatermark.style.display = "none";
+      calcBtn.disabled = true;
+      calcBtn.textContent = "Calculating...";
+
+      try {
+        const parsed = parseInput(input.value.trim());
+        if (!parsed) {
+          throw new Error("Use format like: $500 sneakers");
+        }
+
+        const { amount, year } = parsed;
+        const { priceThen, priceNow } = await fetchBtcPrices(year);
+
+        const btcAmount = amount / priceThen;
+        const valueToday = btcAmount * priceNow;
+
+        const line = `If you bought BTC instead: ${usd(amount)} in ${year} -> ${usd(valueToday)} today`;
+        resultLine.textContent = line;
+        memeText.innerHTML = `<span class="meme-line-top">${usd(amount)} in ${year} is</span><span class="meme-line-bottom">${usd(valueToday)} today</span>`;
+        metaInfo.textContent = `Approx BTC bought: ${btcAmount.toFixed(6)} BTC`;
+
+        const tweetText = `If you bought BTC instead: ${usd(amount)} in ${year} -> ${usd(valueToday)} today`;
+        tweetBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+
+        resultWrap.style.display = "grid";
+      } catch (err) {
+        errorEl.textContent = err instanceof Error ? err.message : "Something went wrong.";
+      } finally {
+        calcBtn.disabled = false;
+        calcBtn.textContent = "Calculate";
+      }
+    });
+
+    copyImageBtn.addEventListener("click", async () => {
+      const initialText = copyImageBtn.textContent;
+      errorEl.textContent = "";
+      copyImageBtn.disabled = true;
+      copyImageBtn.textContent = "Copying...";
+      try {
+        await copyResultImage();
+        copyImageBtn.textContent = "Copied";
+      } catch (err) {
+        errorEl.textContent = err instanceof Error ? err.message : "Could not copy image.";
+        copyImageBtn.textContent = "Copy Image";
+      } finally {
+        setTimeout(() => {
+          copyImageBtn.disabled = false;
+          copyImageBtn.textContent = initialText;
+        }, 900);
+      }
+    });
+
+    tweetBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      errorEl.textContent = "";
+      try {
+        await shareOnTwitterWithImage();
+      } catch (err) {
+        errorEl.textContent = err instanceof Error ? err.message : "Could not share on Twitter.";
+      }
+    });
+
+  </script>
+</body>
+</html>
