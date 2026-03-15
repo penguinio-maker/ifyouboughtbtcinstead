@@ -542,7 +542,9 @@
     }
 
     async function shareOnTwitterWithImage() {
-      const tweetText = resultLine.textContent || "If you bought BTC instead";
+      const headline = "If you bought BTC instead…";
+      const outcome = memeText.innerText.replace(/\s*\n\s*/g, " ");
+      const tweetText = `${headline}\n\n${outcome}\n\nTry it:  ifyouboughtbtcinstead.vercel.app\n\nby @PenguinWeb3`;
       const blob = await buildResultImageBlob();
 
       // Best effort: copy image to clipboard, then open Twitter compose with prefilled text.
